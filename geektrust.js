@@ -335,7 +335,7 @@ const doCommand = function(commandArr, runfile) {
 					console.log("**** HELP ****");
 					console.log("HELP - Shows this screen");
 					console.log("EXIT - Exits program");
-					console.log("RESET - Loads Lengaburu family tree (Replaces current changes)");
+					console.log("RESET - Loads Lengaburu family tree, replacing any changes made since last load/reset");
 					console.log("ADD_CHILD <mother> <child> <gender>");
 					console.log("ADD_SPOUSE <person> <spouse> <gender>");
 					console.log("GET_RELATIONSHIP <person> <relationship>");
@@ -343,8 +343,8 @@ const doCommand = function(commandArr, runfile) {
 					console.log("paternal-uncle, paternal-aunt,");
 					console.log("maternal-uncle, maternal-aunt,");
 					console.log("mother, father, son, daughter, siblings");
-					console.log("brother-in-law, sister-in-law,");
-					console.log("RUN_FILE <filename>");
+					console.log("brother-in-law, sister-in-law");
+					console.log("RUN_FILE <filename> - Adds new information to current family tree from a file. See accompanied test files for examples");
 				}
 			break;
 			case "RESET":
