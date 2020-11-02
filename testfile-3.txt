@@ -1,0 +1,2 @@
+ADD_CHILD Ted Bella Female
+GET_RELATIONSHIP Remus Siblings
