@@ -1,0 +1,24 @@
+{
+  "name": "geektrust",
+  "version": "1.0.0",
+  "description": "An interactive family tree based on the Lengaburu family. (See the PDF in this folder for further information of the challenge)",
+  "main": "geektrust.js",
+  "scripts": {
+    "test": "node geektrust.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eliseo-dannunzio/geektrust.git"
+  },
+  "keywords": [
+    "family-tree",
+    "geektrust",
+    "nodejs"
+  ],
+  "author": "Eliseo D'Annunzio",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/eliseo-dannunzio/geektrust/issues"
+  },
+  "homepage": "https://github.com/eliseo-dannunzio/geektrust#readme"
+}
