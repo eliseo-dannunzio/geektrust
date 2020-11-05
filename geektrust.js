@@ -6,6 +6,8 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
+const ud = undefined;
+
 // Gender - Assume binary genders, 0 for male, 1 for female
 // Names - Assume unique names in the family tree, no two family members can have the same name
 
@@ -14,15 +16,15 @@ const familyInitial = [{
         name: "Arthur",
         spouse: "Margret",
         gender: 0,
-        father: undefined,
-        mother: undefined
+        father: ud,
+        mother: ud
     },
     {
         name: "Margret",
         spouse: "Arthur",
         gender: 1,
-        father: undefined,
-        mother: undefined
+        father: ud,
+        mother: ud
     }
 ];
 
@@ -67,7 +69,7 @@ const findPeople = function(keyName, keyValue) {
             people.push(family[i]);
         }
     }
-    return (people.length===0)?undefined:people;
+    return (people.length===0)?ud:people;
 };
 
 const filterGender = function(people, gender) {
@@ -77,7 +79,7 @@ const filterGender = function(people, gender) {
             results.push(people[l]);
         }
     }
-    return (results.length===0)?undefined:results;
+    return (results.length===0)?ud:results;
 };
 
 const excludeSelf = function(people, name) {
@@ -87,13 +89,13 @@ const excludeSelf = function(people, name) {
             results.push(people[m]);
         }
     }
-    return (results.length===0)?undefined:results;
+    return (results.length===0)?ud:results;
 }
 
 const findChild = function(name, gender) {
 	var getPerson = findPerson('name', name);
 	var getChildren = findPeople(getPerson.gender?'mother':'father', name);
-	return (gender!==undefined)?filterGender(getChildren, gender):getChildren;
+	return (gender!==ud)?filterGender(getChildren, gender):getChildren;
 };
 
 const findParent = function(name, gender) {
@@ -103,8 +105,8 @@ const findParent = function(name, gender) {
 
 const findSibling = function(name, gender) {
 	var getPerson = findPerson('name', name);
-	var getSiblings = ((getPerson.mother!==undefined)&&(getPerson.father!==undefined))?excludeSelf(findChild(getPerson.mother, undefined), name):undefined;
-	return (getSiblings!==undefined)?((gender!==undefined)?filterGender(getSiblings, gender):getSiblings):undefined;
+	var getSiblings = ((getPerson.mother!==ud)&&(getPerson.father!==ud))?excludeSelf(findChild(getPerson.mother, ud), name):ud;
+	return (getSiblings!==ud)?((gender!==ud)?filterGender(getSiblings, gender):getSiblings):ud;
 };
 
 const findSpouse = function(name) {
@@ -119,9 +121,9 @@ const getGender = function(gender) {
 const addChild = function(commandArr) {
 	var childObject = {
 		name: commandArr[2],
-        spouse: undefined,
+        spouse: ud,
         gender: getGender(commandArr[3]),
-        father: findPerson('spouse',commandArr[1])?findPerson('spouse',commandArr[1]).name:undefined,
+        father: findPerson('spouse',commandArr[1])?findPerson('spouse',commandArr[1]).name:ud,
         mother: commandArr[1]
 	};
 	family.push(childObject);
@@ -133,8 +135,8 @@ const addSpouse = function(commandArr) {
 		name: commandArr[2],
         spouse: commandArr[1],
         gender: getGender(commandArr[3]),
-        father: undefined,
-        mother: undefined
+        father: ud,
+        mother: ud
 	};
 	family.push(spouseObject);
 };
@@ -145,16 +147,32 @@ const getRelationship = function(commandArr) {
 	
 	switch(relationship.toLowerCase()) {
 		case "paternal-uncle":
-			return (findParent(basePerson, 0) && findParent(basePerson, 0)[0].mother && findParent(basePerson, 0)[0].father)?findSibling(findParent(basePerson, 0)[0].name, 0):undefined;
+			return ((findParent(basePerson, 0)[0]!==ud) && 
+					(findParent(basePerson, 0)[0].mother!==ud) && 
+					(findParent(basePerson, 0)[0].father)!==ud) ?
+						findSibling(findParent(basePerson, 0)[0].name, 0):
+						ud;
 		break;
 		case "paternal-aunt":
-			return (findParent(basePerson, 0) && findParent(basePerson, 0)[0].mother && findParent(basePerson, 0)[0].father)?findSibling(findParent(basePerson, 0)[0].name, 1):undefined;
+			return ((findParent(basePerson, 0)[0]!==ud) && 
+					(findParent(basePerson, 0)[0].mother!==ud) && 
+					(findParent(basePerson, 0)[0].father)!==ud) ?
+						findSibling(findParent(basePerson, 0)[0].name, 1):
+						ud;
 		break;
 		case "maternal-uncle":
-			return (findParent(basePerson, 1) && findParent(basePerson, 1)[0].mother && findParent(basePerson, 1)[0].father)?findSibling(findParent(basePerson, 1)[0].name, 0):undefined;
+			return ((findParent(basePerson, 1)[0]!==ud) && 
+					(findParent(basePerson, 1)[0].mother!==ud) && 
+					(findParent(basePerson, 1)[0].father)!==ud) ?
+						findSibling(findParent(basePerson, 1)[0].name, 0):
+						ud;
 		break;
 		case "maternal-aunt":
-			return (findParent(basePerson, 1) && findParent(basePerson, 1)[0].mother && findParent(basePerson, 1)[0].father)?findSibling(findParent(basePerson, 1)[0].name, 1):undefined;
+			return ((findParent(basePerson, 1)[0]!==ud) && 
+					(findParent(basePerson, 1)[0].mother!==ud) && 
+					(findParent(basePerson, 1)[0].father)!==ud) ?
+						findSibling(findParent(basePerson, 1)[0].name, 1):
+						ud;
 		break;
 		case "mother":
 			return findParent(basePerson, 1);
@@ -169,49 +187,49 @@ const getRelationship = function(commandArr) {
 			return findChild(basePerson, 1);
 		break;
 		case "siblings":
-			return findSibling(basePerson, undefined);
+			return findSibling(basePerson, ud);
 		break;
 		case "brother-in-law":
-			var bilBySpouse = (findSpouse(basePerson)[0] !== undefined) ? 
+			var bilBySpouse = (findSpouse(basePerson)[0] !== ud) ? 
 				findSibling(findSpouse(basePerson)[0].name, 0) : 
-				undefined;
+				ud;
 			var bilBySibs = (findPerson('name', basePerson).mother && 
 				findPerson('name', basePerson).father && 
 				findSibling(basePerson, 1)) ?
 					(findSibling(basePerson, 1).map(function(person) {
 						return findSpouse(person.name)[0];
 					})) : 
-					undefined;
-			var silBySpouseSibs = (findSpouse(basePerson)[0] !== undefined) ? 
+					ud;
+			var silBySpouseSibs = (findSpouse(basePerson)[0] !== ud) ? 
 				findSibling(findSpouse(basePerson)[0].name, 1) : 
-				undefined;
+				ud;
 			var bilBySilSpouses = [];
-			if (silBySpouseSibs !== undefined) {
+			if (silBySpouseSibs !== ud) {
 				silBySpouseSibs.forEach(function(person) {
-					(findSpouse(person.name)[0]!==undefined) && bilBySilSpouses.push(findSpouse(person.name)[0]);
+					(findSpouse(person.name)[0]!==ud) && bilBySilSpouses.push(findSpouse(person.name)[0]);
 				});
 			}
 			bilList = (bilBySpouse || []).concat(bilBySibs || []).concat(bilBySilSpouses || []) || [];
 			return bilList;		
 		break;
 		case "sister-in-law":
-			var silBySpouse = (findSpouse(basePerson)[0] !== undefined) ? 
+			var silBySpouse = (findSpouse(basePerson)[0] !== ud) ? 
 				findSibling(findSpouse(basePerson)[0].name, 1) : 
-				undefined;
+				ud;
 			var silBySibs = (findPerson('name', basePerson).mother && 
 				findPerson('name', basePerson).father && 
 				findSibling(basePerson, 0)) ?
 					(findSibling(basePerson, 0).map(function(person) {
 						return findSpouse(person.name)[0];
 					})) : 
-					undefined;
-			var bilBySpouseSibs = (findSpouse(basePerson)[0] !== undefined) ? 
+					ud;
+			var bilBySpouseSibs = (findSpouse(basePerson)[0] !== ud) ? 
 				findSibling(findSpouse(basePerson)[0].name, 0) : 
-				undefined;
+				ud;
 			var silByBilSpouses = [];
-			if (bilBySpouseSibs !== undefined) {
+			if (bilBySpouseSibs !== ud) {
 				bilBySpouseSibs.forEach(function(person) {
-					(findSpouse(person.name)[0]!==undefined) && silByBilSpouses.push(findSpouse(person.name)[0]);
+					(findSpouse(person.name)[0]!==ud) && silByBilSpouses.push(findSpouse(person.name)[0]);
 				});
 			}
 			silList = (silBySpouse || []).concat(silBySibs || []).concat(silByBilSpouses || []) || [];
@@ -284,7 +302,7 @@ const validateCommand = function(commandArr) {
                         isValid = false;
                     } else {
                         if (findPerson('name',commandArr[1])) {
-                            if (findPerson('name',commandArr[1]).spouse !== undefined) {
+                            if (findPerson('name',commandArr[1]).spouse !== ud) {
 								spouseAddFail();
                                 isValid = false;
                             } else {
@@ -335,7 +353,7 @@ const doCommand = function(commandArr, runfile) {
 					console.log("**** HELP ****");
 					console.log("HELP - Shows this screen");
 					console.log("EXIT - Exits program");
-					console.log("RESET - Loads Lengaburu family tree, replacing any changes made since last load/reset");
+					console.log("RESET - Loads Lengaburu family tree (Replaces current changes)");
 					console.log("ADD_CHILD <mother> <child> <gender>");
 					console.log("ADD_SPOUSE <person> <spouse> <gender>");
 					console.log("GET_RELATIONSHIP <person> <relationship>");
@@ -343,8 +361,8 @@ const doCommand = function(commandArr, runfile) {
 					console.log("paternal-uncle, paternal-aunt,");
 					console.log("maternal-uncle, maternal-aunt,");
 					console.log("mother, father, son, daughter, siblings");
-					console.log("brother-in-law, sister-in-law");
-					console.log("RUN_FILE <filename> - Adds new information to current family tree from a file. See accompanied test files for examples");
+					console.log("brother-in-law, sister-in-law,");
+					console.log("RUN_FILE <filename>");
 				}
 			break;
 			case "RESET":
@@ -365,12 +383,12 @@ const doCommand = function(commandArr, runfile) {
 			case "GET_RELATIONSHIP":
 				if (validateCommand(commandArr)) {
 					var results = getRelationship(commandArr);
-					if(results !== undefined) {
+					if(results !== ud) {
 						results = results.filter(function(item) {
-							return item!==undefined;
+							return item!==ud;
 						});
 					}
-					if((results === undefined) || (results.length === 0)){
+					if((results === ud) || (results.length === 0)){
 						console.log('NONE');
 					} else {
 						var nameList = [];
